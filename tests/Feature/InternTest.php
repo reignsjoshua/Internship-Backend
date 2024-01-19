@@ -20,7 +20,7 @@ class InternTest extends TestCase
     public function test_intern_insert()
     {
         // preparation
-        $intern = Intern::create([
+        $intern = [
             'first_name' => 'John',
             'middle_name' => 'Doe',
             'last_name' => 'Smith',
@@ -28,28 +28,15 @@ class InternTest extends TestCase
             'age' => 22,
             'year_level' => '4th Year',
             'gender' => 'Male',
-        ]);
+        ];
+
 
         // action
-        $response = $this->post('/api/register-intern');
+        $response = $this->post('/api/register-intern', $intern);
 
         // assertion
-
-        switch ($response->status()) {
-            case (201):
-                $response->assertStatus(201);
-                break;
-            case (400):
-                $response->assertStatus(400);
-
-                break;
-            case (500):
-                $response->assertStatus(500);
-
-                break;
-            default:
-                $this->assertTrue(false);
-        }
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('interns', $intern);
     }
 
     public function test_intern_read()

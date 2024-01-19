@@ -16,7 +16,6 @@ class UserController extends Controller
     {
 
         try {
-
             $validatedData = $request->validate([
                 'first_name' => 'required|string',
                 'middle_name' => 'string|nullable',
@@ -41,12 +40,6 @@ class UserController extends Controller
                 'message' => 'Added Successfuly',
                 'data' => $intern,
             ], 201);
-        } catch (QueryException $e) {
-            Log::error('Database Query Exception: ' . $e->getMessage());
-            return response()->json([
-                'message' => 'Bad Request',
-                'status' => 400
-            ], 400);
         } catch (\Exception $e) {
             Log::error('Exception: ' . $e->getMessage());
 
@@ -108,11 +101,20 @@ class UserController extends Controller
 
     public function updateIntern(Request $request, $id)
     {
-        Intern::find($id)->update($request->all());
+        try {
+            Intern::find($id)->update($request->all());
 
-        return response()->json([
-            'message' => 'Updated Successfuly',
-            'status' => 200,
-        ], 200);
+            return response()->json([
+                'message' => 'Updated Successfuly',
+                'status' => 200,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Error updating interns: ' . $e->getMessage());
+
+            return response()->json([
+                'error' => 'Something went wrong',
+                'status' => 500,
+            ]);
+        }
     }
 }
