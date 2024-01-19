@@ -18,5 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('register-intern', [UserController::class, 'registerIntern']);
-Route::get('get-intern', [UserController::class, 'getInterns']);
+Route::post('register-intern', [UserController::class, 'registerIntern'])->name('create.intern');
+Route::get('get-intern', [UserController::class, 'getInterns'])->name('read.intern');
+Route::delete('delete-intern/{id}', [UserController::class, 'deleteIntern'])->name('delete.intern');
+Route::patch('update-intern/{id}', [UserController::class, 'updateIntern'])->name('update.intern');

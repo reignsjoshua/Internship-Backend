@@ -38,22 +38,22 @@ class UserController extends Controller
             ];
             $intern = Intern::create($data);
             return response()->json([
-                'message' => 'Intern Added',
+                'message' => 'Added Successfuly',
                 'data' => $intern,
             ], 201);
         } catch (QueryException $e) {
             Log::error('Database Query Exception: ' . $e->getMessage());
             return response()->json([
-                'error' => 'Something went Wrong',
-                'status' => 500
-            ]);
+                'message' => 'Bad Request',
+                'status' => 400
+            ], 400);
         } catch (\Exception $e) {
             Log::error('Exception: ' . $e->getMessage());
 
             return response()->json([
-                'error' => 'Something went wrong',
+                'message' => 'Something went wrong',
                 'status' => 500,
-            ]);
+            ], 500);
         }
     }
 
@@ -74,5 +74,45 @@ class UserController extends Controller
                 'status' => 500,
             ]);
         }
+    }
+
+    public function deleteIntern($id)
+    {
+        try {
+            $intern = Intern::find($id);
+
+            if (!$intern) {
+                return response()->json([
+                    'message' => 'Intern not found',
+                    'status' => 404,
+                ], 404);
+            } else {
+
+
+                $intern->delete();
+
+                return response()->json([
+                    'status' => 204,
+                    'message' => 'Deleted successfuly',
+                ], 204);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error retrieving interns: ' . $e->getMessage());
+
+            return response()->json([
+                'error' => 'Something went wrong',
+                'status' => 500,
+            ]);
+        }
+    }
+
+    public function updateIntern(Request $request, $id)
+    {
+        Intern::find($id)->update($request->all());
+
+        return response()->json([
+            'message' => 'Updated Successfuly',
+            'status' => 200,
+        ], 200);
     }
 }
